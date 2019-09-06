@@ -1,3 +1,5 @@
 .terraform
+*.backup
 packer_cache
+out
 *.tfstate

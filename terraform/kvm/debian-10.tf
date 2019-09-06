@@ -1,5 +1,6 @@
 provider "libvirt" {
-  uri   = "qemu+ssh://maintainer@future/system"
+  # uri = "qemu+ssh://maintainer@future/system"
+  uri = "qemu:///system"
 }
 
 resource "libvirt_pool" "debian10" {
@@ -11,7 +12,7 @@ resource "libvirt_pool" "debian10" {
 resource "libvirt_volume" "os_image" {
   name   = "os_image"
   pool   = "${libvirt_pool.debian10.name}"
-  source = "/home/mario/Development/repositories/hashicorp-tools/packer/output_debian10/debian10"
+  source = "/home/mario/Development/devops/hashicorp-tools/packer/output_debian10/debian10"
 }
 
 resource "libvirt_domain" "debian10" {
@@ -23,9 +24,9 @@ resource "libvirt_domain" "debian10" {
 
   network_interface {
     network_name = "default"
-    hostname = "master"
-    mac = "AA:BB:CC:11:22:22"
-    addresses = ["192.168.1.55/32"]
+    hostname     = "master"
+    #    mac = "AA:BB:CC:11:22:22"
+    #    addresses = ["192.168.1.55/32"]
   }
 
   graphics {
@@ -33,7 +34,7 @@ resource "libvirt_domain" "debian10" {
   }
 
   console {
-    type = "pty"
+    type        = "pty"
     target_port = "0"
     target_type = "virtio"
   }
