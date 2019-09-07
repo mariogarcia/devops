@@ -9,7 +9,7 @@ variable "kvm_destination_uri" {
 }
 
 variable "hostname" {
-  type = string
+  type        = string
   description = "hostname of the vm"
 }
 
