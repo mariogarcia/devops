@@ -1,18 +1,27 @@
-provider "libvirt" {
-  # uri = "qemu+ssh://maintainer@future/system"
-  uri = "qemu:///system"
+variable "image_source_path" {
+  type        = string
+  description = "qcow2 image path"
 }
 
-resource "libvirt_pool" "debian10" {
-  name = "debian10"
+variable "kvm_destination_uri" {
+  type        = string
+  description = "kvm instance uri where the vm is going to be deployed"
+}
+
+provider "libvirt" {
+  uri = var.kvm_destination_uri
+}
+
+resource "libvirt_pool" "terraform" {
+  name = "terraform"
   type = "dir"
-  path = "/tmp/terraform-provider-libvirt-pool-debian10"
+  path = "/tmp/terraform"
 }
 
 resource "libvirt_volume" "os_image" {
   name   = "os_image"
-  pool   = "${libvirt_pool.debian10.name}"
-  source = "/home/mario/Development/devops/hashicorp-tools/packer/output_debian10/debian10"
+  pool   = "${libvirt_pool.terraform.name}"
+  source = var.image_source_path
 }
 
 resource "libvirt_domain" "debian10" {

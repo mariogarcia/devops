@@ -4,14 +4,14 @@
         "password": "admindebian",
         "disk_size": "10000",
         "memory": "1024",
-        "ssh_timeout": "5m",
+        "ssh_timeout": "12m",
         "boot_wait": "10s"
     },
     "builders":
     [
         {
             "type": "qemu",
-            "vm_name": "buster",
+            "name": "buster",
             "format": "qcow2",
             "accelerator": "kvm",
             "headless": true,
@@ -29,7 +29,6 @@
             "ssh_username": "{{user `user`}}",
             "ssh_password": "{{user `password`}}",
             "ssh_timeout": "{{user `ssh_timeout`}}",
-            "ssh_wait_timeout": "{{user `ssh_timeout`}}",
             "shutdown_command": "echo '{{user `password`}}'|sudo -S shutdown -h now",
 
             "http_directory": "http",
