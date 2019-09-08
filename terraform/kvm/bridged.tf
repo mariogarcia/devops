@@ -23,6 +23,11 @@ variable "bridge_name" {
   description = "name of the bridge configured in the host"
 }
 
+variable "cpu_count" {
+  type        = string
+  description = "number of cpus used by vm"
+}
+
 provider "libvirt" {
   uri = var.kvm_destination_uri
 }
@@ -36,6 +41,7 @@ resource "libvirt_volume" "os_image" {
 resource "libvirt_domain" "new_vm" {
   name   = var.hostname
   memory = var.memory
+  vcpu   = var.cpu_count
 
   disk {
     volume_id = "${libvirt_volume.os_image.id}"
