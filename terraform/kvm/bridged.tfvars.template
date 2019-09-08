@@ -1,0 +1,5 @@
+kvm_destination_uri = "qemu://system"
+image_source_path   = "/whereqcow1imagesare/imagefile"
+hostname            = "master"
+memory              = "2048"
+bridge_name         = "br0"
