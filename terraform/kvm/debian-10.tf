@@ -31,8 +31,8 @@ resource "libvirt_domain" "debian_10" {
   }
 
   network_interface {
-    network_name = "default"
-    hostname     = var.hostname
+    hostname  = var.hostname
+    bridge    = "br0"
   }
 
   graphics {
