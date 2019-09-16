@@ -1,7 +1,6 @@
 module "k8s_master" {
-  source = "../../modules/machine"
+  source = "../machine"
 
-  kvm_destination_uri = "qemu+ssh://maintainer@future/system"
   image_source_path   = pathexpand("~/Development/devops/hashicorp-tools/packer/out/packer-buster")
   hostname            = "k8s_master"
   memory              = "2048"

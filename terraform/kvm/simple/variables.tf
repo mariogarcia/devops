@@ -1,6 +1,7 @@
 variable "kvm_destination_uri" {
   type        = string
   description = "kvm instance uri where the vm is going to be deployed"
+  default     = "qemu:///system"
 }
 
 variable "hostname" {
@@ -11,16 +12,19 @@ variable "hostname" {
 variable "memory" {
   type        = string
   description = "amount of memory"
+  default     = "2048"
 }
 
 variable "bridge_name" {
   type        = string
   description = "name of the bridge configured in the host"
+  default     = "br0"
 }
 
 variable "cpu_count" {
   type        = string
   description = "number of cpus used by vm"
+  default     = "2"
 }
 
 variable "os_image" {
