@@ -2,6 +2,12 @@ provider "libvirt" {
   uri = var.kvm_destination_uri
 }
 
+resource "libvirt_network" "tf" {
+   name = "tf"
+   domain = "tf.local"
+   addresses = ["192.168.1.50/28"]
+ }
+
 resource "libvirt_volume" "os_image" {
   name   = "os_image${var.os_image}"
   pool   = "default"
@@ -18,17 +24,7 @@ resource "libvirt_domain" "new_vm" {
   }
 
   network_interface {
-    hostname = var.hostname
-    bridge   = var.bridge_name
-  }
-
-  graphics {
-    listen_type = "address"
-  }
-
-  console {
-    type        = "pty"
-    target_port = "0"
-    target_type = "virtio"
+    network_id = "${libvirt_network.tf.id}"
+    wait_for_lease = true
   }
 }

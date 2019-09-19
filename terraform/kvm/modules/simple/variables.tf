@@ -9,16 +9,14 @@ variable "hostname" {
   description = "hostname of the vm"
 }
 
+#variable "ip" {
+#  type = string
+#}
+
 variable "memory" {
   type        = string
   description = "amount of memory"
   default     = "2048"
-}
-
-variable "bridge_name" {
-  type        = string
-  description = "name of the bridge configured in the host"
-  default     = "br0"
 }
 
 variable "cpu_count" {
