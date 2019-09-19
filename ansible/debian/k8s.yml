@@ -1,0 +1,18 @@
+---
+- hosts: master
+  vars_prompt:
+
+    - name: master_ip
+      prompt: What is the ip of the master node ?
+      private: no
+
+  roles:
+    - k8s-base
+    - k8s-init
+  become: true
+
+- hosts: workers
+  roles:
+    - k8s-base
+    - k8s-join
+  become: true

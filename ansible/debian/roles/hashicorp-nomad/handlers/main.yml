@@ -1,0 +1,6 @@
+---
+- name: restart nomad
+  become: true
+  service:
+    name: nomad
+    state: started

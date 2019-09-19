@@ -1,0 +1,100 @@
+# NOMAD INSTALLATION
+# -------------------
+# This Ansible tasks install a single Nomad
+# server
+#
+# - sets hosts name
+# - downloads Nomad
+
+# sets hostname
+- name: hostname
+  hostname:
+    name: nomad
+
+- name: Add the inventory into /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{item}} {{ hostvars[item]['hostname'] }}"
+    state: present
+  when: hostvars[item]['ansible_facts']['hostname'] is defined
+  with_items:
+    - "{{ groups['all'] }}"
+
+# downloads Nomad
+- name: download
+  get_url:
+    url: https://releases.hashicorp.com/nomad/0.9.5/nomad_0.9.5_linux_amd64.zip
+    dest: /tmp/
+
+- name: unzip library
+  apt:
+    name: ['unzip']
+    state: present
+
+- name: create nomad group
+  group:
+    name: nomad
+
+- name: create nomad user
+  user:
+    name: nomad
+    create_home: no
+    group: nomad
+
+- name: unzip nomad
+  unarchive:
+    src: /tmp/nomad_0.9.5_linux_amd64.zip
+    dest: /tmp/
+    remote_src: yes
+
+# installs Nomad as a service
+- name: copy binary to /usr/local/bin
+  copy:
+    src: /tmp/nomad
+    dest: /usr/local/bin/nomad
+    owner: root
+    group: root
+    mode: '755'
+    remote_src: yes
+
+- name: create nomad data dir
+  file:
+    path: /opt/nomad
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+
+- name: create nomad config dir
+  file:
+    path: /etc/nomad.d
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+
+- name: create nomad configuration
+  template:
+    src: nomad.hcl
+    dest: /etc/nomad.d/
+    owner: root
+    group: root
+    mode: '640'
+
+- name: create nomad server configuration
+  template:
+    src: server.hcl
+    dest: /etc/nomad.d/server.hcl
+    owner: root
+    group: root
+    mode: '640'
+
+- name: create nomad service
+  template:
+    src: nomad.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+  notify:
+    - restart nomad

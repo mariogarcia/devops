@@ -1,0 +1,30 @@
+- name: download
+  get_url:
+    url: https://releases.hashicorp.com/vault/1.2.2/vault_1.2.2_linux_amd64.zip
+    dest: /tmp/
+
+- name: unzip vault
+  unarchive:
+    src: /tmp/vault_1.2.2_linux_amd64.zip
+    dest: /tmp/
+    remote_src: yes
+
+- name: copy binary to /usr/local/bin
+  copy:
+    src: /tmp/vault_1.2.2_linux_amd64/vault
+    dest: /usr/local/bin/vault
+    remote_src: yes
+
+- name: copy config to /etc
+  template:
+    src: vault.json
+    dest: /etc
+    owner: root
+    group: root
+
+- name: copy service template
+  template:
+    src: vault.service
+    dest: /etc/systemd/system/vault.service
+    owner: root
+    group: root

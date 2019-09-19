@@ -1,0 +1,14 @@
+---
+- hosts: consul_leader
+  roles:
+    - hashicorp-consul
+  vars:
+    consul_role: leader
+  become: true
+
+- hosts: consul_followers
+  roles:
+    - hashicorp-consul
+  vars:
+    consul_role: follower
+  become: true

@@ -1,0 +1,12 @@
+---
+- hosts: nomad
+  vars_prompt:
+    - name: consul_ip
+      prompt: What is the ip of Consul ?
+      private: no
+    - name: consul_port
+      prompt: What is the port Consul is running at ?
+      private: no
+  roles:
+    - hashicorp-nomad
+  become: true

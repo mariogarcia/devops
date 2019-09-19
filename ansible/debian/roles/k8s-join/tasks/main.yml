@@ -1,0 +1,12 @@
+- name: copy join script
+  template:
+    src: "{{ master_join_script_path }}"
+    dest: "{{ master_join_script_path }}"
+    mode: u+rwx
+    owner: kubi
+    group: kubi
+  become: true
+
+- name: execute join script
+  command: "{{ master_join_script_path }}"
+  become: true

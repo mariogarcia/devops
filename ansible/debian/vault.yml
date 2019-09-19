@@ -1,0 +1,9 @@
+---
+- hosts: vault
+  vars_prompt:
+    - name: username
+      prompt: "Insert the username"
+      private: no
+  roles:
+    - hashicorp-vault
+  become: true
