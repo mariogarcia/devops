@@ -1,0 +1,6 @@
+---
+- name: start ufw daemon
+  become: true
+  service:
+    name: ufw
+    state: started

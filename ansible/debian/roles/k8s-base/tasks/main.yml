@@ -1,0 +1,67 @@
+- name: Remove swapfile from /etc/fstab
+  mount:
+    path: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - none
+    - swap
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: networking requirements
+  command: "{{ item }}"
+  become: true
+  with_items:
+    - modprobe br_netfilter
+    - sysctl net.bridge.bridge-nf-call-iptables=1
+
+- name: base libraries
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+    - ebtables
+    - ethtool
+    - bridge-utils
+
+- name: add keys
+  apt_key:
+    url: "{{ item }}"
+  with_items:
+    - https://download.docker.com/linux/debian/gpg
+    - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: add repositories
+  apt_repository:
+    repo: "{{ item }}"
+    state: present
+  with_items:
+    - deb https://download.docker.com/linux/debian buster stable
+    - deb https://apt.kubernetes.io/ kubernetes-xenial main
+
+- name: install docker and k8s
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-ce=18.06.1~ce~3-0~debian
+    - docker-compose
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: adding kubi to docker group
+  user:
+    name: kubi
+    groups:
+      - docker
+    append: yes

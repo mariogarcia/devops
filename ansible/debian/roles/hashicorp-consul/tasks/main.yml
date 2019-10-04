@@ -1,0 +1,118 @@
+# CONSUL INSTALLATION
+# -------------------
+# This Ansible tasks install a Consul cluster
+# of 2 nodes (leader/follower).
+#
+# - sets hosts names. This is required as Consul
+#   checks hostnames aren't the same
+# - downloads Consul
+# - installs Consul as a service
+
+# sets hostnames
+- name: hostname leader
+  hostname:
+    name: consuln1
+  when: consul_role == "leader"
+
+- name: hostname follower
+  hostname:
+    name: consuln2
+  when: consul_role == "follower"
+
+- name: Add the inventory into /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{item}} {{ hostvars[item]['hostname'] }}"
+    state: present
+  when: hostvars[item]['ansible_facts']['hostname'] is defined
+  with_items:
+    - "{{ groups['all'] }}"
+
+# downloads Consul
+- name: download
+  get_url:
+    url: https://releases.hashicorp.com/consul/1.6.1/consul_1.6.1_linux_amd64.zip
+    dest: /tmp/
+
+- name: unzip library
+  apt:
+    name: ['unzip']
+    state: present
+
+- name: create consul group
+  group:
+    name: consul
+
+- name: create consul user
+  user:
+    name: consul
+    create_home: no
+    group: consul
+
+- name: unzip consul
+  unarchive:
+    src: /tmp/consul_1.6.1_linux_amd64.zip
+    dest: /tmp/
+    remote_src: yes
+
+# installs Consul as a service
+- name: copy binary to /usr/local/bin
+  copy:
+    src: /tmp/consul
+    dest: /usr/local/bin/consul
+    owner: consul
+    group: consul
+    mode: '755'
+    remote_src: yes
+
+- name: create consul config dir
+  file:
+    path: /etc/consul.d
+    state: directory
+    owner: consul
+    group: consul
+    recurse: yes
+
+- name: create consul data dir
+  file:
+    path: /opt/consul
+    state: directory
+    owner: consul
+    group: consul
+    recurse: yes
+
+- name: create consul configuration
+  template:
+    src: consul.hcl
+    dest: /etc/consul.d/
+    owner: consul
+    group: consul
+    mode: '640'
+
+- name: create consul server configuration [leader]
+  template:
+    src: leader.hcl
+    dest: /etc/consul.d/server.hcl
+    owner: consul
+    group: consul
+    mode: '640'
+  when: consul_role == "leader"
+
+- name: create consul server configuration [follower]
+  template:
+    src: follower.hcl
+    dest: /etc/consul.d/server.hcl
+    owner: consul
+    group: consul
+    mode: '640'
+  when: consul_role == "follower"
+
+- name: create consul service
+  template:
+    src: consul.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+  notify:
+    - restart consul

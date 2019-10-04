@@ -1,0 +1,15 @@
+- name: qemu -> kvm -> libvirt
+  apt:
+    name: [
+    'qemu-kvm',
+    'libvirt-clients',
+    'libvirt-daemon-system',
+    'bridge-utils',
+    'libguestfs-tools',
+    'genisoimage',
+    'virtinst',
+    'libosinfo-bin',
+    'virt-manager'
+    ]
+
+    state: present

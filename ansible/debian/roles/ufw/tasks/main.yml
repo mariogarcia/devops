@@ -1,0 +1,14 @@
+---
+- name: install ufw
+  become: true
+  apt:
+    name: ufw
+    state: present
+
+- ufw:
+    rule: allow
+    name: ssh
+
+- ufw:
+    state: enabled
+    policy: deny
