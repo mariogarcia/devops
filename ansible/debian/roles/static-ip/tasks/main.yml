@@ -1,0 +1,46 @@
+- name: copy scripts to node
+  template:
+    src: "{{ item }}"
+    dest: /tmp
+    mode: u+rwx
+  with_items:
+    - scripts/get_ip.sh
+    - scripts/get_device_name.sh
+  become: true
+
+- name: get machine ip
+  command: /tmp/get_ip.sh
+  register: static_ip
+
+- set_fact:
+    static_ip={{ static_ip.stdout }}
+
+- name: get machine main device name
+  command: /tmp/get_device_name.sh
+  register: device_name
+
+- set_fact:
+    device_name={{ device_name.stdout }}
+
+- name: change /etc/network/interfaces file
+  template:
+    src: "interfaces"
+    dest: /etc/network/interfaces
+  become: true
+
+- name: add /etc/network/interfaces.d/device_name
+  template:
+    src: "main_interface"
+    dest: "/etc/network/interfaces.d/{{ device_name }}"
+  become: true
+
+- name: copy restart script
+  template:
+    src: scripts/restart_network.sh
+    dest: /tmp
+    mode: u+rwx
+  become: true
+
+- name: restart network
+  command: "/tmp/restart_network.sh"
+  become: true

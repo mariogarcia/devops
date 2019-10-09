@@ -1,0 +1,5 @@
+allow-hotplug {{ device_name }}
+iface {{ device_name }} inet static
+    address {{ static_ip }}
+    netmask {{ netmask }}
+    gateway {{ gateway }}
