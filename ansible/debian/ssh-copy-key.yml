@@ -1,0 +1,29 @@
+# MOTIVATION
+# ----------
+# copies a public key to a set of servers
+#
+# EXAMPLE
+# -------
+# ansible-playbook \
+#   -u someuser \
+#   --inventory hosts.init \
+#   --key-file="~/.ssh/id_rsa" \
+#   ssh-copy-key.yml
+---
+- hosts: all
+  vars_prompt:
+    - name: username
+      prompt: What is the username to store key under ?
+      private: no
+    - name: key_path
+      prompt: Where is the key to use (e.g /home/myuser/.ssh/id_rsa.pub) ?
+      private: no
+  roles:
+    - ssh-copy-key
+  become: true
+  tasks:
+    - name: Set authorized key taken from file
+      authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ lookup('file', key_path) }}"
