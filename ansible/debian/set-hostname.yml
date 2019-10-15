@@ -1,0 +1,25 @@
+# MOTIVATION
+# ----------
+# sets hostname for one machine.
+#
+# EXAMPLE
+# -------
+# ansible-playbook \
+#   -u someuser \
+#   --inventory nomad2.domain.net, \
+#   --key-file="~/.ssh/id_rsa" \
+#   set-hostname.yml
+#
+# Notice I'm passing a list of servers
+# and not an inventory file
+---
+- hosts: all
+  vars_prompt:
+    - name: hostname
+      prompt: What is the hostname to set ?
+      private: no
+  become: true
+  tasks:
+    - name: hostname
+      hostname:
+        name: "{{ hostname }}"
