@@ -18,8 +18,6 @@
     - name: key_path
       prompt: Where is the key to use (e.g /home/myuser/.ssh/id_rsa.pub) ?
       private: no
-  roles:
-    - ssh-copy-key
   become: true
   tasks:
     - name: Set authorized key taken from file
