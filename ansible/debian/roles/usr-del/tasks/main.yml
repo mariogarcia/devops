@@ -1,0 +1,6 @@
+- name: delete user
+  user:
+    name: "{{ user_to_delete }}"
+    remove: yes
+    state: absent
+  become: true

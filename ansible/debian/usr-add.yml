@@ -16,5 +16,5 @@
       prompt: "Where is the public key ?"
       private: no
   roles:
-    - usr
+    - usr-add
   become: true

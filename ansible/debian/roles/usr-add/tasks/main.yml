@@ -1,12 +1,11 @@
 - name: Operations user
   user:
-    name: "{{ username }}"
+    name: "{{ user_to_add }}"
     password: "{{ password }}"
     state: present
     shell: /bin/bash
     groups:
       - sudo
-      - vagrant
       - cdrom
       - floppy
       - audio
@@ -17,6 +16,13 @@
 
 - name: Set authorized key took from file
   authorized_key:
-    user: "{{ username }}"
+    user: "{{ user_to_add }}"
     state: present
     key: "{{ lookup('file', public_key_path) }}"
+
+- lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'

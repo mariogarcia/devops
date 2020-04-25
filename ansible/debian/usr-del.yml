@@ -1,0 +1,9 @@
+---
+- hosts: all
+  vars_prompt:
+    - name: user_to_delete
+      prompt: "username to delete"
+      private: no
+  roles:
+    - usr-del
+  become: true

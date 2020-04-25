@@ -1,0 +1,5 @@
+- name: Set authorized key taken from file
+  authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ lookup('file', key_path) }}"

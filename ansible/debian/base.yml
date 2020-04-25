@@ -1,0 +1,33 @@
+# MOTIVATION
+# ----------
+# sets up the base of every server
+#
+# ssh-copy-key
+# ------------
+# username: username under which the key will be copied
+# key_path: ssh public key to copy to remote server
+#
+# static-ip
+# ---------
+# netmask: netmask
+# gateway: ip of the gateway
+#
+# set-hostname
+# ------------
+# hostname: server hostname
+#
+# upgrade
+# -------
+# no variables needed. it upgrade all packages
+---
+- hosts: all
+  roles:
+    - static-ip
+    - hostname
+    - usr-add
+    - upgrade
+  tasks:
+    - reboot:
+        msg : "rebooting now..."
+  become: true
+
