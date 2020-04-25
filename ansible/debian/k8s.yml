@@ -1,5 +1,5 @@
 ---
-- hosts: master
+- hosts: k8s_master
   vars_prompt:
 
     - name: master_ip
@@ -11,7 +11,7 @@
     - k8s-init
   become: true
 
-- hosts: workers
+- hosts: k8s_workers
   roles:
     - k8s-base
     - k8s-join
