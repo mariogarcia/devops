@@ -18,3 +18,11 @@ indent_style = space
 [Rakefile]
 indent_size = 2
 indent_style = space
+
+[*.json]
+indent_style=space
+indent_size=2
+
+[{*.yml,*.yaml}]
+indent_style=space
+indent_size=2
