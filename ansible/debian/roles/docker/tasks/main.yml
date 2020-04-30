@@ -1,0 +1,30 @@
+- name: prerequisites
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+    state: present
+
+- name: add docker key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: add docker repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+    state: present
+
+- name: run apt-get update
+  apt:
+    update_cache: yes
+
+- name: docker packages
+  apt:
+    name: ['docker-ce']
+    state: present
+
+- name: add user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    shell: /bin/bash
+    groups: "docker"
+    append: yes
